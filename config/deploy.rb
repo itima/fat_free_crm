@@ -20,20 +20,19 @@ namespace :deploy do
   task :restart, :roles => :app, :except => { :no_release => true } do
     run "touch #{current_path}/tmp/restart.txt"
   end
-
-  desc "Make symlink for database yaml" 
-  task :symlink do
-    # run "cd #{current_path}/ && /opt/ruby-enterprise-1.8.7-2010.02/bin/bundle install"
-    db_config = "/var/www/#{application}/conf/database.yml"
-    run "ln -nfs #{db_config} #{current_path}/config/database.yml" 
-    run "touch #{current_path}/tmp/restart.txt"    
-  end
-
   
   [:start, :stop].each do |t|
     desc "#{t} task is a no-op with mod_rails"
     task t, :roles => :app do ; end
   end
+  
+  desc "Make symlink for database yaml" 
+  task :symlink do
+    db_config = "/var/www/#{application}/shared/conf/database.yml"
+    run "ln -nfs #{db_config} #{current_path}/config/database.yml" 
+    run "touch #{current_path}/tmp/restart.txt"    
+  end
+  
 end
 
 # 
